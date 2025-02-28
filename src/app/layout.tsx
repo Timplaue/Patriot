@@ -67,14 +67,14 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                           <li className="">
                               <a href="#" className="block mr-4 lg:px-4">
                                   <button
-                                      className="focus:outline-none bg-rose-700 px-6 rounded-md hover:bg-rose-200 py-3 hover:text-rose-500">
+                                      className="border-2 focus:outline-none bg-none px-6 rounded-md py-3 hover:text-black">
                                       Регистрация
                                   </button>
                               </a></li>
                           <li className="">
                               <a href="#" className="block lg:ml-4">
                                   <button
-                                      className="focus:outline-none bg-rose-700 px-6 rounded-md hover:bg-rose-200 py-3 hover:text-rose-500">
+                                      className="border-2 focus:outline-none bg-none px-6 rounded-md py-3 hover:text-black">
                                       Войти
                                   </button>
                               </a></li>
@@ -94,7 +94,7 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                   </Link>
               </div>
               <div className="p-5 md:flex md:justify-end">
-                  <div className="flex flex-col md:flex-row md:gap-100">
+                  <div className="flex flex-col md:flex-row md:gap-60">
                       <div className="p-5">
                           <ul>
                               <p className="text-gray-800 font-bold text-2xl pb-4">Быстрые ссылки</p>
