@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { FaWhatsapp } from "react-icons/fa";
 import { FaTelegram } from "react-icons/fa";
+import AuthButtons from "../components/button";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +55,7 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                           <li className="hover:text-black"><a href="#"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">СВО-Хроника
                               и подвиги</a></li>
-                          <li className="hover:text-black"><a href="#"
+                          <li className="hover:text-black"><a href="/forum"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Форум</a>
                           </li>
                           <li className="hover:text-black"><a href="#"
@@ -64,20 +65,7 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                   </nav>
                   <div className="">
                       <ul className="flex lg:flex-row">
-                          <li className="">
-                              <a href="#" className="block mr-4 lg:px-4">
-                                  <button
-                                      className="border-2 focus:outline-none bg-none px-6 rounded-md py-3 hover:text-black">
-                                      Регистрация
-                                  </button>
-                              </a></li>
-                          <li className="">
-                              <a href="#" className="block lg:ml-4">
-                                  <button
-                                      className="border-2 focus:outline-none bg-none px-6 rounded-md py-3 hover:text-black">
-                                      Войти
-                                  </button>
-                              </a></li>
+                          <AuthButtons/>
                       </ul>
                   </div>
               </div>
@@ -101,9 +89,11 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                               <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
                                   Главная
                               </li>
-                              <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
-                                  Форум
-                              </li>
+                              <a href="/forum">
+                                  <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
+                                      Форум
+                                  </li>
+                              </a>
                               <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
                                   Образовательный контент
                               </li>
@@ -111,7 +101,10 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                                   История ВОВ
                               </li>
                               <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
-                                  Хроника СВО
+                                  СВО-Хроника и подвиги
+                              </li>
+                              <li className="text-gray-500 text-md pb-2 font-semibold hover:text-[#9D1915] cursor-pointer">
+                                  О нас
                               </li>
                           </ul>
                       </div>
