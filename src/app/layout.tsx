@@ -52,9 +52,9 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                           <li className="hover:text-black"><a href="/VOV"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">История
                               ВОВ</a></li>
-                          <li className="hover:text-black"><a href="#"
-                                                              className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">СВО-Хроника
-                              и подвиги</a></li>
+                          <li className="hover:text-black"><a href="/SVO"
+                                                                  className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">СВО-Хроника
+                                  и подвиги</a></li>
                           <li className="hover:text-black"><a href="/forum"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Форум</a>
                           </li>

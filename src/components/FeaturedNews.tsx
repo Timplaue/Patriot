@@ -45,10 +45,7 @@ const FeaturedNews: React.FC<FeaturedNewsProps> = ({ news, otherNews }) => {
             {/* Список новостей */}
             <div className="w-full md:w-1/2 p-4 md:p-6 flex flex-col justify-between">
                 <div>
-                    <p className="text-sm text-gray-500 mb-2">Расписание</p>
-                    <p className="text-base md:text-lg text-gray-600 line-clamp-5 mb-6">
-                        {news.content}
-                    </p>
+                    <p className="text-2xl mb-2 text-[#9D1915] text-center my-3 mb-4">Новости на сегодня</p>
 
                     <div className="space-y-4">
                         {otherNews && otherNews.length > 0 ? (
