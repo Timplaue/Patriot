@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Используйте next/navigation вместо next/router
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -9,21 +9,32 @@ const Login = () => {
     const [error, setError] = useState('');
     const router = useRouter();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const res = await fetch('http://localhost:5000/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-        });
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
 
-        const data = await res.json();
-        if (res.ok) {
-            localStorage.setItem('token', data.token);  // Сохраняем токен
-            router.push('/profile');  // Перенаправляем в личный кабинет
-        } else {
-            setError(data.message || 'Ошибка авторизации');
+            const data = await res.json();
+
+            if (res.ok) {
+                // Сохраняем токен в localStorage
+                localStorage.setItem('token', data.token);
+
+                // Триггерим кастомное событие для обновления состояния аутентификации
+                window.dispatchEvent(new Event('auth'));
+
+                // Перенаправляем на страницу профиля
+                router.push('/profile');
+            } else {
+                setError(data.message || 'Ошибка авторизации');
+            }
+        } catch (err) {
+            setError('Произошла ошибка при подключении к серверу');
         }
     };
 

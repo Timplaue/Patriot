@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import { FaWhatsapp } from "react-icons/fa";
 import { FaTelegram } from "react-icons/fa";
-import AuthButtons from "../components/button";
+import AuthButtons from "../components/Authbutton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,14 +53,16 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">История
                               ВОВ</a></li>
                           <li className="hover:text-black"><a href="/SVO"
-                                                                  className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">СВО-Хроника
-                                  и подвиги</a></li>
+                                                              className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">СВО-Хроника
+                              и подвиги</a></li>
                           <li className="hover:text-black"><a href="/forum"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Форум</a>
                           </li>
                           <li className="hover:text-black"><a href="#"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Образовательный
                               контент</a></li>
+                          <li className="hover:text-black"><a href="#"
+                                                              className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Я помогу</a></li>
                       </ul>
                   </nav>
                   <div className="">
@@ -131,7 +133,7 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
           <hr className="mx-[100px]"/>
           <div className="flex flex-col justify-center items-center text-center p-5 bg-gray-50">
               <h1 className="text-gray-800 font-semibold">
-                  © {new Date().getFullYear()} Все права защищены | Молодежный центр "Патриот"
+                  © {new Date().getFullYear()} Все права защищены | Молодежный центр Патриот
               </h1>
           </div>
       </footer>

@@ -39,6 +39,7 @@ const Home: React.FC = () => {
         minutes: number;
         seconds: number;
     } | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
     // Получение всех новостей
     useEffect(() => {
@@ -78,10 +79,11 @@ const Home: React.FC = () => {
 
     // Счетчик времени
     useEffect(() => {
-        if (!nextEvent?.date) return;
+        const event = selectedEvent || nextEvent;
+        if (!event?.date) return;
 
         const timer = setInterval(() => {
-            const eventDate = new Date(nextEvent.date).getTime();
+            const eventDate = new Date(event.date).getTime();
             const now = new Date().getTime();
             const difference = eventDate - now;
 
@@ -98,11 +100,13 @@ const Home: React.FC = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [nextEvent]);
+    }, [selectedEvent, nextEvent]);
 
     if (!featuredNews || !otherNews.length) {
         return <div>Загрузка...</div>;
     }
+
+    const displayedEvent = selectedEvent || nextEvent;
 
     return (
         <main className="md:mx-[100px]">
@@ -133,23 +137,22 @@ const Home: React.FC = () => {
                 </Carousel>
             </div>
 
-            {nextEvent && (
+            {displayedEvent && (
                 <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 mb-8 border border-[#DE1A19] rounded-xl p-6 bg-white my-16">
                     <div className="flex flex-col md:w-[60%] lg:w-[55%]">
-                        <img src={nextEvent.imgUrl} alt={nextEvent.name}
+                        <img src={displayedEvent.imgUrl} alt={displayedEvent.name}
                              className="w-full h-64 md:h-80 object-cover rounded-xl mb-4" />
 
                         <div className="mb-4">
                             <p className="text-sm text-gray-500 mb-2">
-                                {new Date(nextEvent.date).toLocaleDateString('ru-RU', {
+                                {new Date(displayedEvent.date).toLocaleDateString('ru-RU', {
                                     day: 'numeric',
                                     month: 'long',
                                     year: 'numeric'
                                 })}
                             </p>
-                            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{nextEvent.name}</h2>
-                            <h2 className="text-xl md:text-3xl font-bold text-gray-800">г.{nextEvent.location}</h2>
-
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{displayedEvent.name}</h2>
+                            <h2 className="text-xl md:text-3xl font-bold text-gray-800">г.{displayedEvent.location}</h2>
                         </div>
 
                         {timeLeft && (
@@ -171,7 +174,7 @@ const Home: React.FC = () => {
                             </div>
                         )}
 
-                        <Link href={`/events/${nextEvent._id}`} className="w-fit">
+                        <Link href={`/events/${displayedEvent._id}`} className="w-fit">
                             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                                 Узнать больше
                             </button>
@@ -185,8 +188,13 @@ const Home: React.FC = () => {
                                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                                 .slice(0, 3)
                                 .map(event => (
-                                    <Link key={event._id} href={`/events/${event._id}`}
-                                          className="group block hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                                    <div
+                                        key={event._id}
+                                        onClick={() => setSelectedEvent(event)}
+                                        className={`group block hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer ${
+                                            event._id === displayedEvent._id ? 'bg-gray-100' : ''
+                                        }`}
+                                    >
                                         <p className="text-sm text-gray-500 mb-1">
                                             {new Date(event.date).toLocaleDateString('ru-RU', {
                                                 day: 'numeric',
@@ -196,7 +204,7 @@ const Home: React.FC = () => {
                                         <p className="text-base text-gray-800 font-medium group-hover:text-[#DE1A19]">
                                             {event.name}
                                         </p>
-                                    </Link>
+                                    </div>
                                 ))}
                         </div>
                     </div>
