@@ -91,14 +91,40 @@ const Home: React.FC = () => {
 
             {/* Блок с остальными новостями в слайдере */}
             <div className="w-full mt-12">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Другие новости</h2>
-                <Carousel>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6 px-4 md:px-0">Другие новости</h2>
+                <Carousel
+                    opts={{
+                        align: "start",
+                        containScroll: "trimSnaps",
+                    }}
+                    className="px-4 md:px-0"
+                >
                     <CarouselContent>
-                        <CarouselItem><NewsSlider newsList={otherNews} /></CarouselItem>
-                        <CarouselItem><NewsSlider newsList={otherNews} /></CarouselItem>
+                        {otherNews.map((news, index) => (
+                            <CarouselItem
+                                key={index}
+                                className="basis-10/12 sm:basis-1/2 lg:basis-1/3"
+                            >
+                                <div className="bg-white shadow-lg rounded-2xl overflow-hidden mr-4 h-full">
+                                    <img
+                                        src={news.imgUrl}
+                                        alt={news.title}
+                                        className="w-full h-40 object-cover"
+                                    />
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-semibold text-gray-800">{news.title}</h3>
+                                        <p className="mt-2 text-sm text-gray-500 line-clamp-3">{news.content}</p>
+                                    </div>
+                                </div>
+                            </CarouselItem>
+                        ))}
                     </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
+
+                    {/* Адаптивные кнопки навигации */}
+                    <div className="hidden md:block">
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </div>
                 </Carousel>
             </div>
 

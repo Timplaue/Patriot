@@ -81,25 +81,6 @@ const Forum = () => {
 
             {error && <p className="text-red-500">{error}</p>}
 
-            <form onSubmit={handlePostSubmit} className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Заголовок"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="p-2 border rounded w-full mb-2"
-                    required
-                />
-                <textarea
-                    placeholder="Сообщение"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="p-2 border rounded w-full mb-2"
-                    required
-                />
-                <button type="submit" className="p-2 bg-blue-500 text-white rounded">Отправить сообщение</button>
-            </form>
-
             <div>
                 <h2 className="text-xl font-semibold mb-2">Сообщения:</h2>
                 <ul>
@@ -116,6 +97,25 @@ const Forum = () => {
                     )}
                 </ul>
             </div>
+
+            <form onSubmit={handlePostSubmit} className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Заголовок"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="p-2 border rounded w-full mb-2"
+                    required
+                />
+                <textarea
+                    placeholder="Сообщение"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className="p-2 border rounded w-full mb-2"
+                    required
+                />
+                <button type="submit" className="p-2 bg-[#9D1915] text-white rounded">Отправить сообщение</button>
+            </form>
 
             <div className="flex justify-between">
                 <button
