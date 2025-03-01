@@ -25,6 +25,7 @@ interface Event {
     description: string;
     date: string;
     imgUrl: string;
+    location: string;
 }
 
 const Home: React.FC = () => {
@@ -147,6 +148,8 @@ const Home: React.FC = () => {
                                 })}
                             </p>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{nextEvent.name}</h2>
+                            <h2 className="text-xl md:text-3xl font-bold text-gray-800">г.{nextEvent.location}</h2>
+
                         </div>
 
                         {timeLeft && (
