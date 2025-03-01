@@ -11,6 +11,8 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel"
 
+import YandexMap from '../components/YandexMap';
+
 interface News {
     _id: string;
     title: string;
@@ -28,10 +30,21 @@ interface Event {
     location: string;
 }
 
+interface MapEvent {
+    _id: string;
+    title: string;
+    description: string;
+    type: 'military' | 'civilian' | 'other';
+    coordinates: [number, number];
+    date: string;
+    source: string;
+}
+
 const Home: React.FC = () => {
     const [featuredNews, setFeaturedNews] = useState<News | null>(null);
     const [otherNews, setOtherNews] = useState<News[]>([]);
     const [nextEvent, setNextEvent] = useState<Event | null>(null);
+    const [mapEvents, setMapEvents] = useState<MapEvent[]>([]);
     const [allEvents, setAllEvents] = useState<Event[]>([]);
     const [timeLeft, setTimeLeft] = useState<{
         days: number;
@@ -40,6 +53,7 @@ const Home: React.FC = () => {
         seconds: number;
     } | null>(null);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+    const [selectedMapEvent, setSelectedMapEvent] = useState<MapEvent | null>(null);
 
     // Получение всех новостей
     useEffect(() => {
@@ -77,6 +91,20 @@ const Home: React.FC = () => {
         fetchEvents();
     }, []);
 
+    // Получение событий для карты
+    useEffect(() => {
+        const fetchMapEvents = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/map-events');
+                const events = await res.json();
+                setMapEvents(events);
+            } catch (error) {
+                console.error('Ошибка при получении событий:', error);
+            }
+        };
+        fetchMapEvents();
+    }, []);
+
     // Счетчик времени
     useEffect(() => {
         const event = selectedEvent || nextEvent;
@@ -112,11 +140,78 @@ const Home: React.FC = () => {
         <main className="md:mx-[100px]">
             <FeaturedNews news={featuredNews} otherNews={otherNews} />
 
+            {/* Блок с картой и событиями */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+                {/* Список событий на карте */}
+                <div className="space-y-6">
+                    <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-[#DE1A19] pl-4">
+                        События на карте
+                    </h2>
+                    <div className="space-y-4">
+                        {mapEvents.map((event) => (
+                            <div
+                                key={event._id}
+                                onClick={() => setSelectedMapEvent(event)}
+                                className={`p-6 rounded-xl transition-all cursor-pointer ${
+                                    selectedMapEvent?._id === event._id
+                                        ? "bg-[#DE1A19]/10 border-2 border-[#DE1A19]"
+                                        : "bg-white hover:bg-gray-50 border border-gray-200"
+                                }`}
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-semibold text-gray-800">{event.title}</h3>
+                                        <div className="mt-2 flex items-center gap-2">
+                      <span
+                          className={`px-2 py-1 rounded-full text-sm ${
+                              event.type === "military"
+                                  ? "bg-red-100 text-red-800"
+                                  : event.type === "civilian"
+                                      ? "bg-blue-100 text-blue-800"
+                                      : "bg-gray-100 text-gray-800"
+                          }`}
+                      >
+                        {event.type === "military"
+                            ? "Военное"
+                            : event.type === "civilian"
+                                ? "Гражданское"
+                                : "Другое"}
+                      </span>
+                                            <span className="text-sm text-gray-500">
+                        {new Date(event.date).toLocaleDateString("ru-RU")}
+                      </span>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{event.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Карта */}
+                <div className="h-[600px] sticky top-4">
+                    <YandexMap
+                        apiKey="64f1bcc8-2a27-45e0-be86-72fcb42f2602"
+                        center={[50.45, 30.52]}
+                        zoom={6}
+                        events={mapEvents}
+                        selectedEvent={selectedEvent}
+                    />
+                    {/*<iframe*/}
+                    {/*    src="https://yandex.ru/map-widget/v1/?um=constructor%3Aaf0417fe0c6b7e9c4d8e994257c266876d9c0c0ad60ab2193838c3d17f51e261&amp;source=constructor"*/}
+                    {/*    width="749"*/}
+                    {/*    height="614"*/}
+                    {/*    frameBorder="0"*/}
+                    {/*    style={{border: "none"}}/>*/}
+                </div>
+            </div>
+
             <div className="w-full mt-12">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6 px-4 md:px-0">Другие новости</h2>
-                <Carousel opts={{ align: "start", containScroll: "trimSnaps" }} className="px-4 md:px-0">
+                <Carousel opts={{align: "start", containScroll: "trimSnaps"}} className="px-4 md:px-0">
                     <CarouselContent>
-                        {otherNews.map((news) => (
+                    {otherNews.map((news) => (
                             <CarouselItem key={news._id} className="basis-10/12 sm:basis-1/2 lg:basis-1/3">
                                 <div className="bg-white shadow-lg rounded-2xl overflow-hidden mr-4 h-full">
                                     <img src={news.imgUrl} alt={news.title} className="w-full h-40 object-cover" />
@@ -152,7 +247,7 @@ const Home: React.FC = () => {
                                 })}
                             </p>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{displayedEvent.name}</h2>
-                            <h2 className="text-xl md:text-3xl font-bold text-gray-800">г.{displayedEvent.location}</h2>
+                            <h2 className="text-xl md:text-3xl font-bold text-gray-800">📍 г. {displayedEvent.location}</h2>
                         </div>
 
                         {timeLeft && (
