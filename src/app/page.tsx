@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import FeaturedNews from '../components/FeaturedNews';
-import NewsSlider from '../components/NewsSlider';
 
 import {
     Carousel,
@@ -16,6 +15,7 @@ interface News {
     title: string;
     content: string;
     imgUrl: string;
+    createdAt: string; // Добавляем поле даты
 }
 
 interface Event {
@@ -87,7 +87,7 @@ const Home: React.FC = () => {
     return (
         <main className="md:mx-[100px]">
             {/* Блок с новостью дня */}
-            <FeaturedNews news={featuredNews} />
+            <FeaturedNews news={featuredNews} otherNews={otherNews} /> {/* Передаем otherNews */}
 
             {/* Блок с остальными новостями в слайдере */}
             <div className="w-full mt-12">
