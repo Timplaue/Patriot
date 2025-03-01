@@ -1,15 +1,17 @@
 import React from 'react';
+import Link from 'next/link'; // Добавляем импорт Link
 
 interface News {
+    _id: string;
     title: string;
     content: string;
     imgUrl: string;
-    createdAt: string; // Добавляем поле даты
+    createdAt: string;
 }
 
 interface FeaturedNewsProps {
     news: News;
-    otherNews?: News[]; // Делаем otherNews опциональным
+    otherNews?: News[];
 }
 
 const FeaturedNews: React.FC<FeaturedNewsProps> = ({ news, otherNews }) => {
@@ -22,49 +24,47 @@ const FeaturedNews: React.FC<FeaturedNewsProps> = ({ news, otherNews }) => {
 
             {/* Блок с изображением и затемнением */}
             <div className="w-full md:w-1/2 min-h-[250px] md:min-h-[400px] relative">
-                {/* Изображение */}
                 <img
                     src={news.imgUrl}
                     alt={news.title}
                     className="w-full h-full object-cover"
                 />
-
-                {/* Затемнение снизу вверх */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-
-                {/* Заголовок поверх изображения */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                     <h2 className="text-xl md:text-3xl font-bold text-white">
                         {news.title}
                     </h2>
-                    <button
-                        className="rounded-xl bg-gradient-to-r from-red-600 to-yellow-500 text-white py-2 px-4 my-5 md:min-w-60">
-                        Читать далее
-                    </button>
+                    <Link href={`/news/${news._id}`}> {/* Обновляем кнопку */}
+                        <button className="rounded-xl bg-gradient-to-r from-red-600 to-yellow-500 text-white py-2 px-4 my-5 md:min-w-60">
+                            Читать далее
+                        </button>
+                    </Link>
                 </div>
             </div>
 
-            {/* Список новостей: сначала дата, потом название */}
+            {/* Список новостей */}
             <div className="w-full md:w-1/2 p-4 md:p-6 flex flex-col justify-between">
                 <div>
-                    <p className="text-xl text-[#9D1915] mb-2 text-center"><b>Новости на сегодня</b></p>
+                    <p className="text-sm text-gray-500 mb-2">Расписание</p>
+                    <p className="text-base md:text-lg text-gray-600 line-clamp-5 mb-6">
+                        {news.content}
+                    </p>
 
-                    {/* Список других новостей */}
                     <div className="space-y-4">
                         {otherNews && otherNews.length > 0 ? (
-                            otherNews.map((item, index) => (
-                                <div key={index} className="flex items-center space-x-4">
-                                    {/* Дата */}
-                                    <p className="text-sm text-[#DE1A19] whitespace-nowrap">
+                            otherNews.map((item) => (
+                                <div key={item._id} className="flex items-center space-x-4">
+                                    <p className="text-sm text-gray-500 whitespace-nowrap">
                                         {new Date(item.createdAt).toLocaleDateString('ru-RU', {
                                             day: 'numeric',
                                             month: 'long',
                                         })}
                                     </p>
-                                    {/* Название */}
-                                    <p className="text-base text-gray-800 font-medium hover:text-blue-600 transition-colors cursor-pointer">
-                                        {item.title}
-                                    </p>
+                                    <Link href={`/news/${item._id}`} className="hover:underline"> {/* Добавляем ссылку */}
+                                        <p className="text-base text-gray-800 font-medium hover:text-blue-600 transition-colors cursor-pointer">
+                                            {item.title}
+                                        </p>
+                                    </Link>
                                 </div>
                             ))
                         ) : (

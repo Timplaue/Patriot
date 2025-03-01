@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link'; // Импортируем Link для переходов
 import FeaturedNews from '../components/FeaturedNews';
 
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/carousel"
 
 interface News {
+    _id: string; // Добавляем ID для ссылки на новость
     title: string;
     content: string;
     imgUrl: string;
@@ -29,7 +31,6 @@ const Home: React.FC = () => {
     const [featuredNews, setFeaturedNews] = useState<News | null>(null);
     const [otherNews, setOtherNews] = useState<News[]>([]);
     const [nextEvent, setNextEvent] = useState<Event | null>(null);
-    const [allEvents, setAllEvents] = useState<Event[]>([]);
 
     // Функция для получения всех новостей
     useEffect(() => {
@@ -65,21 +66,6 @@ const Home: React.FC = () => {
         fetchNextEvent();
     }, []);
 
-    // Функция для получения всех мероприятий
-    useEffect(() => {
-        const fetchAllEvents = async () => {
-            try {
-                const res = await fetch('http://localhost:5000/api/events');
-                const events = await res.json();
-                setAllEvents(events);
-            } catch (error) {
-                console.error('Ошибка при получении мероприятий:', error);
-            }
-        };
-
-        fetchAllEvents();
-    }, []);
-
     if (!featuredNews || !otherNews.length) {
         return <div>Загрузка...</div>; // Загрузочный экран, пока данные не получены
     }
@@ -112,7 +98,9 @@ const Home: React.FC = () => {
                                         className="w-full h-40 object-cover"
                                     />
                                     <div className="p-4">
-                                        <h3 className="text-lg font-semibold text-gray-800">{news.title}</h3>
+                                        <h3 className="text-lg font-semibold text-gray-800">
+                                            <Link href={`/news/${news._id}`}>{news.title}</Link> {/* Динамическая ссылка */}
+                                        </h3>
                                         <p className="mt-2 text-sm text-gray-500 line-clamp-3">{news.content}</p>
                                     </div>
                                 </div>
