@@ -95,8 +95,7 @@ const Home: React.FC = () => {
                 <Carousel>
                     <CarouselContent>
                         <CarouselItem><NewsSlider newsList={otherNews} /></CarouselItem>
-                        <CarouselItem>...</CarouselItem>
-                        <CarouselItem>...</CarouselItem>
+                        <CarouselItem><NewsSlider newsList={otherNews} /></CarouselItem>
                     </CarouselContent>
                     <CarouselPrevious />
                     <CarouselNext />
@@ -105,37 +104,37 @@ const Home: React.FC = () => {
 
             {/* Блок с ближайщим мероприятием */}
             {nextEvent && (
-                <div className="mt-12 flex w-full border-2 border-[#DE1A19] rounded-2xl shadow-lg overflow-hidden bg-white">
+                <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 mb-8 border border-[#DE1A19] rounded-xl p-6 bg-white my-16">
                     {/* Левый блок с контентом */}
-                    <div className="flex flex-col p-8 space-y-4">
+                    <div className="flex flex-col md:w-[60%] lg:w-[55%]">
                         <img
                             src={nextEvent.imgUrl}
                             alt={nextEvent.name}
-                            className="w-56 h-56 object-cover rounded-xl shadow-sm"
+                            className="w-full h-64 md:h-80 object-cover rounded-xl mb-4"
                         />
 
-                        <div className="flex flex-col space-y-2">
-                            <p className="text-sm font-medium text-[#DE1A19]">
+                        <div className="mb-4">
+                            <p className="text-sm text-gray-500 mb-2">
                                 {new Date(nextEvent.date).toLocaleDateString('ru-RU', {
                                     day: 'numeric',
                                     month: 'long',
                                     year: 'numeric'
                                 })}
                             </p>
-                            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
                                 {nextEvent.name}
                             </h2>
                         </div>
 
-                        <button className="self-start px-6 py-2.5 bg-[#DE1A19] text-white rounded-lg
-                        hover:bg-[#C21615] transition-colors duration-200
-                        focus:outline-none focus:ring-2 focus:ring-[#DE1A19] focus:ring-offset-2">
+                        <button className="w-full md:w-fit px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             Узнать больше
                         </button>
                     </div>
 
                     {/* Правый блок с бордером */}
-                    <div className="w-1/4 border-l-2 border-[#DE1A19] bg-gray-50/50" />
+                    <div className="hidden md:block flex-1 border border-[#DE1A19] rounded-xl p-4 min-h-[300px]">
+                        {/* Пустой блок для будущего контента */}
+                    </div>
                 </div>
             )}
         </main>
