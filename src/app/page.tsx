@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import FeaturedNews from '../components/FeaturedNews';
 import NewsSlider from '../components/NewsSlider';
 
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+
 interface News {
     title: string;
     content: string;
@@ -11,10 +19,10 @@ interface News {
 }
 
 interface Event {
-    title: string;
+    name: string;
     description: string;
     date: string;
-    imageUrl: string;
+    imgUrl: string;
 }
 
 const Home: React.FC = () => {
@@ -84,21 +92,50 @@ const Home: React.FC = () => {
             {/* Блок с остальными новостями в слайдере */}
             <div className="w-full mt-12">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">Другие новости</h2>
-                <NewsSlider newsList={otherNews} />
+                <Carousel>
+                    <CarouselContent>
+                        <CarouselItem><NewsSlider newsList={otherNews} /></CarouselItem>
+                        <CarouselItem>...</CarouselItem>
+                        <CarouselItem>...</CarouselItem>
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
             </div>
 
             {/* Блок с ближайщим мероприятием */}
             {nextEvent && (
-                <div className="mt-12 flex items-center space-x-8 border border-[#DE1A19] rounded-2xl">
-                    <div className="flex-shrink-0">
-                        <img src={nextEvent.imageUrl} alt={nextEvent.title} className="w-48 h-48 object-cover rounded-lg" />
+                <div className="mt-12 flex w-full border-2 border-[#DE1A19] rounded-2xl shadow-lg overflow-hidden bg-white">
+                    {/* Левый блок с контентом */}
+                    <div className="flex flex-col p-8 space-y-4">
+                        <img
+                            src={nextEvent.imgUrl}
+                            alt={nextEvent.name}
+                            className="w-56 h-56 object-cover rounded-xl shadow-sm"
+                        />
+
+                        <div className="flex flex-col space-y-2">
+                            <p className="text-sm font-medium text-[#DE1A19]">
+                                {new Date(nextEvent.date).toLocaleDateString('ru-RU', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                })}
+                            </p>
+                            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+                                {nextEvent.name}
+                            </h2>
+                        </div>
+
+                        <button className="self-start px-6 py-2.5 bg-[#DE1A19] text-white rounded-lg
+                        hover:bg-[#C21615] transition-colors duration-200
+                        focus:outline-none focus:ring-2 focus:ring-[#DE1A19] focus:ring-offset-2">
+                            Узнать больше
+                        </button>
                     </div>
-                    <div className="flex-1">
-                        <h2 className="text-3xl font-semibold text-gray-800">{nextEvent.title}</h2>
-                        <p className="mt-2 text-lg text-gray-600">{nextEvent.description}</p>
-                        <p className="mt-4 text-sm text-gray-500">Дата проведения: {new Date(nextEvent.date).toLocaleDateString()}</p>
-                        <button className="mt-4 p-2 bg-blue-500 text-white rounded">Узнать больше</button>
-                    </div>
+
+                    {/* Правый блок с бордером */}
+                    <div className="w-1/4 border-l-2 border-[#DE1A19] bg-gray-50/50" />
                 </div>
             )}
         </main>

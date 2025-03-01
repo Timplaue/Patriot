@@ -49,7 +49,7 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                   className={`${isActive ? "block" : "hidden"} lg:flex flex-col lg:flex-row justify-between lg:items-center w-full text-[#9D1915] px-4 py-5 lg:py-0 lg:border-none border-t-2 border-black`}>
                   <nav>
                       <ul className="flex flex-col lg:flex-row">
-                          <li className="hover:text-black"><a href="#"
+                          <li className="hover:text-black"><a href="/VOV"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">История
                               ВОВ</a></li>
                           <li className="hover:text-black"><a href="#"
