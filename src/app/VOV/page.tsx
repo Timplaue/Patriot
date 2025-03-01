@@ -112,6 +112,6 @@ const PeoplePage: React.FC = () => {
             )}
         </div>
     );
-};.
+};
 
 export default PeoplePage;
