@@ -1,143 +1,101 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import ForumPost from "../../components/ForumPost";
+import Link from "next/link";
 
-const Forum = () => {
-    const [posts, setPosts] = useState([]); // Инициализация posts как пустой массив
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [error, setError] = useState("");
-    const [isClient, setIsClient] = useState(false);
+const ForumPage: React.FC = () => {
+    const [posts, setPosts] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isCreatingPost, setIsCreatingPost] = useState(false);
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
 
     useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    useEffect(() => {
-        if (!isClient) return;
-
-        // Получаем посты с пагинацией
         const fetchPosts = async () => {
-            try {
-                const res = await fetch(`http://localhost:5000/api/forum?page=${page}&limit=5`);
-                if (!res.ok) throw new Error('Ошибка при загрузке данных');
-                const data = await res.json();
-                setPosts(data.posts || []); // Обеспечиваем, чтобы в случае ошибки или пустого ответа posts всегда был массивом
-                setTotalPages(data.totalPages || 1); // В случае ошибки, установим значение 1
-            } catch (err) {
-                console.error("Ошибка при получении сообщений форума:", err);
-                setError("Ошибка при получении сообщений.");
-            }
+            const response = await fetch(`/api/forum?page=${page}&limit=10`);
+            const data = await response.json();
+            setPosts(data.posts);
+            setTotalPages(data.totalPages);
         };
 
         fetchPosts();
-    }, [isClient, page]);
+    }, [page]);
 
-    const handlePostSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleCreatePost = async () => {
+        const response = await fetch("http://localhost:5000/api/forum/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ title, content }),
+        });
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setError("Пожалуйста, войдите в систему.");
-            return;
-        }
-
-        try {
-            const res = await fetch("http://localhost:5000/api/forum", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ title, content }),
-            });
-
-            const newPost = await res.json();
-            if (res.status === 201) {
-                setPosts([newPost, ...posts]);
-                setTitle("");
-                setContent("");
-            } else {
-                setError(newPost.message || "Ошибка при создании сообщения.");
-            }
-        } catch (err) {
-            setError("Ошибка при отправке сообщения.");
+        if (response.ok) {
+            const newPost = await response.json();
+            setPosts([newPost, ...posts]); // Добавляем новый пост в начало списка
+            setIsCreatingPost(false); // Закрываем форму
+            setTitle(""); // Очищаем поля
+            setContent("");
         }
     };
-
-    const handlePageChange = (newPage: number) => {
-        if (newPage > 0 && newPage <= totalPages) {
-            setPage(newPage);
-        }
-    };
-
-    if (!isClient) return null;
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Форум</h1>
-
-            {error && <p className="text-red-500">{error}</p>}
-
-            <div>
-                <h2 className="text-xl font-semibold mb-2">Сообщения:</h2>
-                <ul>
-                    {posts.length > 0 ? (
-                        posts.map((post) => (
-                            <li key={post._id} className="border-b pb-4 mb-4">
-                                <h3 className="font-bold">{post.title}</h3>
-                                <p>{post.content}</p>
-                                <p className="text-sm text-gray-500">Автор: {post.author?.username}</p>
-                            </li>
-                        ))
-                    ) : (
-                        <p>Сообщений нет.</p>
-                    )}
-                </ul>
+            <h1 className="text-3xl font-bold mb-6">Форум</h1>
+            {posts.map((post) => (
+                <ForumPost key={post._id} post={post} />
+            ))}
+            <div className="flex justify-center mt-6">
+                {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                        key={i + 1}
+                        onClick={() => setPage(i + 1)}
+                        className={`mx-1 px-3 py-1 rounded-lg ${
+                            page === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                        }`}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
             </div>
 
-            <form onSubmit={handlePostSubmit} className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Заголовок"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="p-2 border rounded w-full mb-2"
-                    required
-                />
-                <textarea
-                    placeholder="Сообщение"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="p-2 border rounded w-full mb-2"
-                    required
-                />
-                <button type="submit" className="p-2 bg-[#9D1915] text-white rounded">Отправить сообщение</button>
-            </form>
-
-            <div className="flex justify-between">
+            {/* Форма для создания поста */}
+            <div className="fixed bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg w-96">
                 <button
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
-                    className="bg-gray-500 text-white px-4 py-2 rounded"
+                    onClick={() => setIsCreatingPost(!isCreatingPost)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg w-full hover:bg-green-600"
                 >
-                    Назад
+                    {isCreatingPost ? "Закрыть" : "Создать пост"}
                 </button>
-                <span>
-                    Страница {page} из {totalPages}
-                </span>
-                <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages}
-                    className="bg-gray-500 text-white px-4 py-2 rounded"
-                >
-                    Вперед
-                </button>
+                {isCreatingPost && (
+                    <div className="mt-4">
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Заголовок"
+                            className="w-full p-2 border rounded-lg mb-2"
+                        />
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Содержание"
+                            className="w-full p-2 border rounded-lg mb-2"
+                        />
+                        <button
+                            onClick={handleCreatePost}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600"
+                        >
+                            Опубликовать
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
-export default Forum;
+export default ForumPage;

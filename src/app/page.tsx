@@ -137,7 +137,7 @@ const Home: React.FC = () => {
     const displayedEvent = selectedEvent || nextEvent;
 
     return (
-        <main className="md:mx-[100px]">
+        <main className="md:mx-[100px] mt-6">
             <FeaturedNews news={featuredNews} otherNews={otherNews} />
 
             {/* Блок с картой и событиями */}

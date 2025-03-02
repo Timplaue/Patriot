@@ -49,55 +49,50 @@ const YandexMap: React.FC<YandexMapProps> = ({
     };
 
     useEffect(() => {
-        // Проверяем, загружен ли уже скрипт
-        if (scriptLoaded || typeof window.ymaps !== "undefined") return;
+        if (scriptLoaded || document.querySelector('script[src*="api-maps.yandex.ru"]')) return;
 
         const script = document.createElement("script");
         script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
         script.async = true;
 
         script.onload = () => {
-            setScriptLoaded(true);
             window.ymaps.ready(() => {
-                if (mapRef.current && !mapInstance.current) {
-                    initMap();
-                    addPlacemarks();
-                }
+                setScriptLoaded(true);
+                initMap();
+                addPlacemarks();
             });
+        };
+
+        script.onerror = () => {
+            console.error("Ошибка загрузки Яндекс.Карт");
         };
 
         document.head.appendChild(script);
 
         return () => {
-            // Очистка при размонтировании
-            if (scriptLoaded) {
-                document.head.removeChild(script);
-                if (mapInstance.current) {
-                    mapInstance.current.destroy();
-                    mapInstance.current = null;
-                }
-                placemarks.current = [];
-            }
+            destroyMap();
         };
     }, [apiKey, scriptLoaded]);
 
     useEffect(() => {
         if (scriptLoaded && mapInstance.current) {
-            updatePlacemarks();
+            addPlacemarks();
         }
-    }, [events]);
+    }, [events, scriptLoaded]);
 
     useEffect(() => {
         if (scriptLoaded && mapInstance.current && selectedEvent) {
             centerMap();
         }
-    }, [selectedEvent]);
+    }, [selectedEvent, scriptLoaded]);
 
     const initMap = () => {
-        if (!mapRef.current) return;
+        if (!mapRef.current || mapInstance.current) return;
+
         mapInstance.current = new window.ymaps.Map(mapRef.current, {
             center: center,
             zoom: zoom,
+            controls: ['zoomControl']
         });
     };
 
@@ -112,6 +107,9 @@ const YandexMap: React.FC<YandexMapProps> = ({
     const addPlacemarks = () => {
         if (!mapInstance.current || !window.ymaps) return;
 
+        // Очищаем старые метки перед добавлением новых
+        mapInstance.current.geoObjects.removeAll();
+
         events.forEach(event => {
             if (!validateCoordinates(event.coordinates)) {
                 console.error("Некорректные координаты для события:", event._id);
@@ -124,25 +122,18 @@ const YandexMap: React.FC<YandexMapProps> = ({
         });
     };
 
-    const updatePlacemarks = () => {
-        if (mapInstance.current) {
-            mapInstance.current.geoObjects.removeAll(); // Удаляем старые метки
-            addPlacemarks(); // Добавляем новые метки
-        }
-    };
-
     const centerMap = () => {
         if (selectedEvent && validateCoordinates(selectedEvent.coordinates)) {
-            mapInstance.current.setCenter(selectedEvent.coordinates);
-            mapInstance.current.setZoom(10);
+            mapInstance.current.setCenter(selectedEvent.coordinates, 10, {
+                duration: 300
+            });
         }
     };
 
     const validateCoordinates = (coords: [number, number]) => {
         return coords &&
-            coords.length === 2 &&
-            typeof coords[0] === "number" &&
-            typeof coords[1] === "number";
+            Math.abs(coords[0]) <= 90 &&
+            Math.abs(coords[1]) <= 180;
     };
 
     const createPlacemark = (event: any) => {
@@ -163,11 +154,12 @@ const YandexMap: React.FC<YandexMapProps> = ({
             },
             {
                 preset: getIconColor(event.type),
-                hideIconOnBalloonOpen: false,
+                balloonCloseButton: false,
+                hideIconOnBalloonOpen: false
             }
         );
 
-        placemark.events.add("click", () => {
+        placemark.events.add('click', () => {
             const eventElement = document.querySelector(`[data-event-id="${event._id}"]`);
             eventElement?.scrollIntoView({ behavior: "smooth", block: "center" });
         });

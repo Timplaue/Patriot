@@ -20,6 +20,7 @@ body {
   color: var(--background);
   background: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  background-image: url("/public/pattern.svg");
 }
 
 /* Добавьте в глобальные стили, например, в `globals.css` */
