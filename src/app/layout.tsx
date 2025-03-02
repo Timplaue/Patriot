@@ -50,6 +50,8 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                   <nav>
                       <ul className="flex flex-col lg:flex-row">
                           <li className="hover:text-black"><a href="/VOV"
+                                                              className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Главная</a></li>
+                          <li className="hover:text-black"><a href="/VOV"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">История
                               ВОВ</a></li>
                           <li className="hover:text-black"><a href="/SVO"
@@ -61,8 +63,6 @@ export default function RootLayout({children, }: Readonly<{ children: React.Reac
                           <li className="hover:text-black"><a href="/education"
                                                               className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Образовательный
                               контент</a></li>
-                          <li className="hover:text-black"><a href="#"
-                                                              className="block lg:px-4 py-5 hover:border-b-2 hover:border-black">Я помогу</a></li>
                       </ul>
                   </nav>
                   <div className="">

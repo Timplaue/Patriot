@@ -14,7 +14,7 @@ const PostPage: React.FC = () => {
     useEffect(() => {
         if (id) {
             const fetchPost = async () => {
-                const response = await fetch(`/api/forum/${id}`);
+                const response = await fetch(`http://localhost:5000/api/forum/${id}`);
                 const data = await response.json();
                 setPost(data);
             };
@@ -24,7 +24,7 @@ const PostPage: React.FC = () => {
     }, [id]);
 
     const handleCommentSubmit = async () => {
-        const response = await fetch(`/api/forum/${id}/comment`, {
+        const response = await fetch(`http://localhost:5000/api/forum/${id}/comment`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -14,7 +14,7 @@ const ForumPage: React.FC = () => {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const response = await fetch(`/api/forum?page=${page}&limit=10`);
+            const response = await fetch(`http://localhost:5000/api/forum?page=${page}&limit=10`);
             const data = await response.json();
             setPosts(data.posts);
             setTotalPages(data.totalPages);

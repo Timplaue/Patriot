@@ -84,7 +84,7 @@ const WwiiQuiz: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center text-white p-4">
+        <div className="min-h-screen flex items-center justify-center text-white p-4 bg-[#9D1915]">
             <div className="max-w-2xl w-full bg-white text-black p-6 shadow-lg rounded-2xl">
                 {showResult ? (
                     <div className="text-center">
